@@ -1,0 +1,5 @@
+{
+    "require": {
+        "jdecool/ollama-client": "^0.1.0"
+    }
+}

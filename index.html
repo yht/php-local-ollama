@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama API Interface</title>
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const inputText = formData.get('inputText');
+            const model = formData.get('model');
+
+            fetch('response.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'inputText': inputText,
+                    'model': model
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').innerHTML = `
+                    <h3>[ ${data.model} @ ${data.date} ] :</h3>
+                    <p>${data.responsetext}</p>
+                `;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Ollama API Interface</h1>
+    <form onsubmit="submitForm(event)">
+        <label for="inputText">Enter your text:</label><br />
+        <textarea id="inputText" name="inputText" rows="4" cols="50" required></textarea><br />
+        <label for="model">Select model:</label>
+        <select id="model" name="model" required>
+            <option value="qwen2:0.5b">qwen2:0.5b</option>
+            <option value="llama3.1:8b-instruct-q4_1">llama3.1:8b-instruct-q4_1</option>
+            <option value="codegemma:instruct">codegemma:instruct</option>
+            <option value="codegemma:code">codegemma:code</option>
+        </select> <input type="submit" value="Submit">
+    </form>
+    <div id="response"></div>
+</body>
+</html>
